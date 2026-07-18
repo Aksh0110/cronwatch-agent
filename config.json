@@ -6,38 +6,95 @@
   "cronWatchServer": "http://localhost:3000",
   "heartbeatInterval": 30000,
   "pm2Processes": [
-    "cronwatch-server",
-    "backup-service"
+    "customer-cron",
+    "partner-cron",
+    "admin-cron"
   ],
-  "logFiles": [
+  "jobs": [
     {
-      "path": "./logs/mock-cron.log",
-      "jobNameDefault": "mock-cron-job"
-    }
-  ],
-  "logPatterns": [
-    {
-      "status": "STARTED",
-      "regex": "Cron job \\[(.+)\\] started",
-      "jobNameGroup": 1
+      "name": "Booking Reminder",
+      "identifier": "[booking-reminder-cron]",
+      "process": "customer-cron",
+      "logFile": "./logs/customer-cron.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "Cron job executed",
+          "status": "SUCCESS"
+        }
+      ]
     },
     {
-      "status": "SUCCESS",
-      "regex": "Cron job \\[(.+)\\] completed successfully in (\\d+)ms",
-      "jobNameGroup": 1,
-      "durationGroup": 2
+      "name": "Retargeting",
+      "identifier": "[Retargeting]",
+      "process": "customer-cron",
+      "logFile": "./logs/customer-cron.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "Start",
+          "status": "STARTED"
+        },
+        {
+          "type": "contains",
+          "pattern": "Run complete",
+          "status": "SUCCESS"
+        }
+      ]
     },
     {
-      "status": "FAILED",
-      "regex": "Cron job \\[(.+)\\] failed with error: (.+)",
-      "jobNameGroup": 1,
-      "messageGroup": 2
+      "name": "ShareEarn",
+      "identifier": "ShareEarn Cron Job",
+      "process": "partner-cron",
+      "logFile": "./logs/partner-cron.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "started...",
+          "status": "STARTED"
+        },
+        {
+          "type": "contains",
+          "pattern": "finished for this run",
+          "status": "SUCCESS"
+        }
+      ]
     },
     {
-      "status": "SKIPPED",
-      "regex": "Cron job \\[(.+)\\] skipped due to: (.+)",
-      "jobNameGroup": 1,
-      "messageGroup": 2
+      "name": "Coupon",
+      "identifier": "Coupon",
+      "process": "admin-cron",
+      "logFile": "./logs/admin-cron.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "Coupon creation process completed",
+          "status": "SUCCESS"
+        }
+      ]
+    },
+    {
+      "name": "Emandate",
+      "identifier": "[emandate-cron]",
+      "process": "customer-cron",
+      "logFile": "./logs/customer-cron.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "Created Razorpay emandate order",
+          "status": "SUCCESS"
+        },
+        {
+          "type": "contains",
+          "pattern": "Recurring payment failed",
+          "status": "FAILED"
+        }
+      ]
     }
   ]
 }

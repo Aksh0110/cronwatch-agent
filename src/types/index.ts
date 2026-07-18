@@ -11,6 +11,21 @@ export interface LogPatternConfig {
   messageGroup?: number;
 }
 
+export interface RuleConfig {
+  type: 'contains' | 'regex';
+  pattern: string;
+  status: 'STARTED' | 'SUCCESS' | 'FAILED' | 'SKIPPED';
+}
+
+export interface JobConfig {
+  name: string;
+  identifier: string;
+  process: string;
+  logFile: string;
+  enabled: boolean;
+  rules: RuleConfig[];
+}
+
 export interface AgentConfig {
   serverId: string;
   serverName: string;
@@ -19,8 +34,9 @@ export interface AgentConfig {
   cronWatchServer: string;
   heartbeatInterval: number;
   pm2Processes: string[];
-  logFiles: LogFileConfig[];
-  logPatterns: LogPatternConfig[];
+  logFiles?: LogFileConfig[];
+  logPatterns?: LogPatternConfig[];
+  jobs?: JobConfig[];
 }
 
 export interface PM2ProcessInfo {
@@ -55,11 +71,18 @@ export interface HeartbeatPayload {
 
 export interface ExecutionEvent {
   serverId: string;
-  backend: string;
+  serverName: string;
+  environment: string;
+  hostname: string;
+  processName: string;
   jobName: string;
-  status: 'STARTED' | 'SUCCESS' | 'FAILED' | 'SKIPPED';
+  status: string;
+  timestamp: string;
+  rawLog: string;
+  matchedRule: string;
+  message?: string;
+  duration?: number;
   startedAt: string;
   completedAt?: string;
-  duration?: number;
-  message?: string;
+  backend?: string;
 }

@@ -29,7 +29,7 @@ export class ConfigLoader {
   }
 
   private validate(config: AgentConfig): void {
-    const requiredFields: (keyof AgentConfig)[] = [
+    const baseRequiredFields: (keyof AgentConfig)[] = [
       'serverId',
       'serverName',
       'backend',
@@ -37,11 +37,9 @@ export class ConfigLoader {
       'cronWatchServer',
       'heartbeatInterval',
       'pm2Processes',
-      'logFiles',
-      'logPatterns',
     ];
 
-    for (const field of requiredFields) {
+    for (const field of baseRequiredFields) {
       if (config[field] === undefined || config[field] === null) {
         throw new Error(`Missing required configuration field: ${field}`);
       }
@@ -55,12 +53,44 @@ export class ConfigLoader {
       throw new Error('pm2Processes must be an array of strings');
     }
 
-    if (!Array.isArray(config.logFiles)) {
-      throw new Error('logFiles must be an array');
-    }
+    if (config.jobs) {
+      if (!Array.isArray(config.jobs)) {
+        throw new Error('jobs configuration must be an array');
+      }
 
-    if (!Array.isArray(config.logPatterns)) {
-      throw new Error('logPatterns must be an array');
+      for (const job of config.jobs) {
+        if (!job.name || !job.identifier || !job.process || !job.logFile || job.enabled === undefined || !job.rules) {
+          throw new Error(`Job config is missing fields: ${JSON.stringify(job)}`);
+        }
+
+        if (!Array.isArray(job.rules)) {
+          throw new Error(`Rules for job ${job.name} must be an array`);
+        }
+
+        for (const rule of job.rules) {
+          if (!rule.type || !rule.pattern || !rule.status) {
+            throw new Error(`Rule in job ${job.name} is missing fields: ${JSON.stringify(rule)}`);
+          }
+
+          if (rule.type !== 'contains' && rule.type !== 'regex') {
+            throw new Error(`Invalid rule type "${rule.type}" in job ${job.name}. Must be "contains" or "regex".`);
+          }
+
+          const validStatuses = ['STARTED', 'SUCCESS', 'FAILED', 'SKIPPED'];
+          if (!validStatuses.includes(rule.status)) {
+            throw new Error(`Invalid status "${rule.status}" in job ${job.name}. Must be one of ${validStatuses.join(', ')}.`);
+          }
+        }
+      }
+    } else {
+      // Fallback: Validate legacy logFiles and logPatterns
+      if (!config.logFiles || !Array.isArray(config.logFiles)) {
+        throw new Error('logFiles must be an array when jobs are not configured');
+      }
+
+      if (!config.logPatterns || !Array.isArray(config.logPatterns)) {
+        throw new Error('logPatterns must be an array when jobs are not configured');
+      }
     }
   }
 }

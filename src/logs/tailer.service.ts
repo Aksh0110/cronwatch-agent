@@ -15,8 +15,8 @@ export class TailerService {
   public watchFiles(filePaths: string[]): void {
     if (this.watcher) return;
 
-    // Resolve absolute paths
-    const pathsToWatch = filePaths.map((p) => path.resolve(p));
+    // Resolve absolute paths and filter duplicates
+    const pathsToWatch = Array.from(new Set(filePaths.map((p) => path.resolve(p))));
 
     this.watcher = chokidar.watch(pathsToWatch, {
       persistent: true,
