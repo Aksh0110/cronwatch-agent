@@ -47,3 +47,17 @@
 {"level":"warn","message":"Failed to send heartbeat: ","service":"cronwatch-agent","timestamp":"2026-07-18 14:18:08"}
 {"level":"warn","message":"Failed to send heartbeat: ","service":"cronwatch-agent","timestamp":"2026-07-18 14:18:38"}
 {"level":"info","message":"Received SIGINT. Starting graceful shutdown...","service":"cronwatch-agent","timestamp":"2026-07-18 14:18:48"}
+{"level":"info","message":"=============================================","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"info","message":"Starting CronWatch Agent...","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"info","message":"=============================================","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"info","message":"Loading config from: C:\\Akshay-DEV-OPS\\Hoora Technologies\\cronwatch-agent\\config.json","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"info","message":"Registering agent with server...","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"error","message":"Failed to register agent: ","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"warn","message":"Agent registration failed on startup. Registration will be retried implicitly when server becomes online.","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"info","message":"API client event queue processor started.","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"info","message":"Heartbeat service started. Sending every 30000ms.","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"info","message":"Registry architecture enabled for log parser.","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"info","message":"Initializing CronRegistry with 5 jobs.","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:02"}
+{"level":"warn","message":"Failed to send heartbeat: ","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:08"}
+{"level":"warn","message":"Failed to send heartbeat: ","service":"cronwatch-agent","timestamp":"2026-07-18 21:54:33"}
+{"level":"info","message":"Received SIGINT. Starting graceful shutdown...","service":"cronwatch-agent","timestamp":"2026-07-18 21:58:32"}

@@ -1,45 +1,63 @@
 {
   "serverId": "srv-001",
   "serverName": "App Server 1",
-  "backend": "PM2",
-  "environment": "production",
+  "backend": "customer",
+  "environment": "staging",
   "cronWatchServer": "http://localhost:3000",
   "heartbeatInterval": 30000,
   "pm2Processes": [
-    "customer-cron",
-    "partner-cron",
-    "admin-cron"
+    "customer-cron"
   ],
   "jobs": [
     {
       "name": "Booking Reminder",
       "identifier": "[booking-reminder-cron]",
       "process": "customer-cron",
-      "logFile": "./logs/customer-cron.log",
+      "logFile": "/home/ec2-user/.pm2/logs/customer-cron-out.log",
       "enabled": true,
       "rules": [
         {
           "type": "contains",
           "pattern": "Cron job executed",
           "status": "SUCCESS"
+        },
+        {
+          "type": "contains",
+          "pattern": "Reminder cron already running",
+          "status": "SKIPPED"
+        },
+        {
+          "type": "contains",
+          "pattern": "Error executing reminder cron",
+          "status": "FAILED"
         }
       ]
     },
     {
-      "name": "Retargeting",
-      "identifier": "[Retargeting]",
+      "name": "Coupon",
+      "identifier": "Cron job executed",
       "process": "customer-cron",
-      "logFile": "./logs/customer-cron.log",
+      "logFile": "/home/ec2-user/.pm2/logs/customer-cron-out.log",
       "enabled": true,
       "rules": [
         {
           "type": "contains",
-          "pattern": "Start",
-          "status": "STARTED"
+          "pattern": "Cron job executed",
+          "status": "SUCCESS"
         },
         {
           "type": "contains",
-          "pattern": "Run complete",
+          "pattern": "Cron already running",
+          "status": "SKIPPED"
+        },
+        {
+          "type": "contains",
+          "pattern": "Error executing cron job",
+          "status": "FAILED"
+        },
+        {
+          "type": "contains",
+          "pattern": "Coupon creation process completed",
           "status": "SUCCESS"
         }
       ]
@@ -47,8 +65,8 @@
     {
       "name": "ShareEarn",
       "identifier": "ShareEarn Cron Job",
-      "process": "partner-cron",
-      "logFile": "./logs/partner-cron.log",
+      "process": "customer-cron",
+      "logFile": "/home/ec2-user/.pm2/logs/customer-cron-out.log",
       "enabled": true,
       "rules": [
         {
@@ -64,24 +82,10 @@
       ]
     },
     {
-      "name": "Coupon",
-      "identifier": "Coupon",
-      "process": "admin-cron",
-      "logFile": "./logs/admin-cron.log",
-      "enabled": true,
-      "rules": [
-        {
-          "type": "contains",
-          "pattern": "Coupon creation process completed",
-          "status": "SUCCESS"
-        }
-      ]
-    },
-    {
       "name": "Emandate",
       "identifier": "[emandate-cron]",
       "process": "customer-cron",
-      "logFile": "./logs/customer-cron.log",
+      "logFile": "/home/ec2-user/.pm2/logs/customer-cron-out.log",
       "enabled": true,
       "rules": [
         {
