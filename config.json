@@ -1,0 +1,43 @@
+{
+  "serverId": "srv-001",
+  "serverName": "App Server 1",
+  "backend": "PM2",
+  "environment": "production",
+  "cronWatchServer": "http://localhost:3000",
+  "heartbeatInterval": 30000,
+  "pm2Processes": [
+    "cronwatch-server",
+    "backup-service"
+  ],
+  "logFiles": [
+    {
+      "path": "./logs/mock-cron.log",
+      "jobNameDefault": "mock-cron-job"
+    }
+  ],
+  "logPatterns": [
+    {
+      "status": "STARTED",
+      "regex": "Cron job \\[(.+)\\] started",
+      "jobNameGroup": 1
+    },
+    {
+      "status": "SUCCESS",
+      "regex": "Cron job \\[(.+)\\] completed successfully in (\\d+)ms",
+      "jobNameGroup": 1,
+      "durationGroup": 2
+    },
+    {
+      "status": "FAILED",
+      "regex": "Cron job \\[(.+)\\] failed with error: (.+)",
+      "jobNameGroup": 1,
+      "messageGroup": 2
+    },
+    {
+      "status": "SKIPPED",
+      "regex": "Cron job \\[(.+)\\] skipped due to: (.+)",
+      "jobNameGroup": 1,
+      "messageGroup": 2
+    }
+  ]
+}
