@@ -61,7 +61,7 @@ export class ApiClient {
 
   public async sendHeartbeat(payload: HeartbeatPayload): Promise<void> {
     try {
-      await this.client.post('/agents/heartbeat', { serverId: payload.serverId });
+      await this.client.post('/agents/heartbeat', payload);
       logger.debug('Heartbeat sent successfully.');
     } catch (error: any) {
       logger.warn('Failed to send heartbeat: %s', error.message);
