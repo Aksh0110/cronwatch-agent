@@ -1,43 +1,104 @@
 {
   "serverId": "srv-001",
   "serverName": "App Server 1",
-  "backend": "PM2",
-  "environment": "production",
+  "backend": "customer",
+  "environment": "staging",
   "cronWatchServer": "http://localhost:3000",
   "heartbeatInterval": 30000,
   "pm2Processes": [
-    "cronwatch-server",
-    "backup-service"
+    "customer-cron"
   ],
-  "logFiles": [
+  "jobs": [
     {
-      "path": "./logs/mock-cron.log",
-      "jobNameDefault": "mock-cron-job"
-    }
-  ],
-  "logPatterns": [
-    {
-      "status": "STARTED",
-      "regex": "Cron job \\[(.+)\\] started",
-      "jobNameGroup": 1
+      "name": "Booking Reminder",
+      "identifier": "[booking-reminder-cron]",
+      "process": "customer-cron",
+      "logFile": "/home/ec2-user/.pm2/logs/customer-cron-out.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "Cron job executed",
+          "status": "SUCCESS"
+        },
+        {
+          "type": "contains",
+          "pattern": "Reminder cron already running",
+          "status": "SKIPPED"
+        },
+        {
+          "type": "contains",
+          "pattern": "Error executing reminder cron",
+          "status": "FAILED"
+        }
+      ]
     },
     {
-      "status": "SUCCESS",
-      "regex": "Cron job \\[(.+)\\] completed successfully in (\\d+)ms",
-      "jobNameGroup": 1,
-      "durationGroup": 2
+      "name": "Coupon",
+      "identifier": "Cron job executed",
+      "process": "customer-cron",
+      "logFile": "/home/ec2-user/.pm2/logs/customer-cron-out.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "Cron job executed",
+          "status": "SUCCESS"
+        },
+        {
+          "type": "contains",
+          "pattern": "Cron already running",
+          "status": "SKIPPED"
+        },
+        {
+          "type": "contains",
+          "pattern": "Error executing cron job",
+          "status": "FAILED"
+        },
+        {
+          "type": "contains",
+          "pattern": "Coupon creation process completed",
+          "status": "SUCCESS"
+        }
+      ]
     },
     {
-      "status": "FAILED",
-      "regex": "Cron job \\[(.+)\\] failed with error: (.+)",
-      "jobNameGroup": 1,
-      "messageGroup": 2
+      "name": "ShareEarn",
+      "identifier": "ShareEarn Cron Job",
+      "process": "customer-cron",
+      "logFile": "/home/ec2-user/.pm2/logs/customer-cron-out.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "started...",
+          "status": "STARTED"
+        },
+        {
+          "type": "contains",
+          "pattern": "finished for this run",
+          "status": "SUCCESS"
+        }
+      ]
     },
     {
-      "status": "SKIPPED",
-      "regex": "Cron job \\[(.+)\\] skipped due to: (.+)",
-      "jobNameGroup": 1,
-      "messageGroup": 2
+      "name": "Emandate",
+      "identifier": "[emandate-cron]",
+      "process": "customer-cron",
+      "logFile": "/home/ec2-user/.pm2/logs/customer-cron-out.log",
+      "enabled": true,
+      "rules": [
+        {
+          "type": "contains",
+          "pattern": "Created Razorpay emandate order",
+          "status": "SUCCESS"
+        },
+        {
+          "type": "contains",
+          "pattern": "Recurring payment failed",
+          "status": "FAILED"
+        }
+      ]
     }
   ]
 }

@@ -43,7 +43,13 @@ async function bootstrap() {
       parserService.parseLine(filePath, line);
     });
 
-    const filePaths = config.logFiles.map((f) => f.path);
+    let filePaths: string[] = [];
+    if (config.jobs) {
+      filePaths = config.jobs.map((j) => j.logFile);
+    } else if (config.logFiles) {
+      filePaths = config.logFiles.map((f) => f.path);
+    }
+
     if (filePaths.length > 0) {
       tailerService.watchFiles(filePaths);
     } else {
