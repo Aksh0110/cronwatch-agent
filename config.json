@@ -6,7 +6,9 @@
   "cronWatchServer": "http://localhost:3000",
   "heartbeatInterval": 30000,
   "pm2Processes": [
-    "customer-cron"
+    "customer-cron",
+    "admin-cron",
+    "partner-cron"
   ],
   "jobs": [
     {
