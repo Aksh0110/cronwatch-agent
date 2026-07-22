@@ -1,5 +1,6 @@
 import winston from 'winston';
 import path from 'path';
+import DailyRotateFile from 'winston-daily-rotate-file';
 
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -20,12 +21,16 @@ export const logger = winston.createLogger({
   format: logFormat,
   defaultMeta: { service: 'cronwatch-agent' },
   transports: [
-    new winston.transports.File({ 
-      filename: path.join('logs', 'error.log'), 
+    new DailyRotateFile({ 
+      filename: path.join('logs', 'error-%DATE%.log'), 
+      datePattern: 'YYYY-MM-DD',
+      maxFiles: '7d',
       level: 'error' 
     }),
-    new winston.transports.File({ 
-      filename: path.join('logs', 'agent.log') 
+    new DailyRotateFile({ 
+      filename: path.join('logs', 'agent-%DATE%.log'), 
+      datePattern: 'YYYY-MM-DD',
+      maxFiles: '7d' 
     }),
     new winston.transports.Console({
       format: consoleFormat
